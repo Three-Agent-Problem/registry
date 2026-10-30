@@ -1,0 +1,13 @@
+{{define "check.html"}}{{template "head" "Card checker"}}
+<p>Paste an agent's base URL or a full card URL. The checker fetches <code>/.well-known/agent-card.json</code> (and the legacy path) and grades the card against A2A 1.0.</p>
+<form method="get" action="/check"><input type="url" name="url" value="{{.URL}}" placeholder="https://agent.example.com" required><button>Check</button></form>
+{{if .Error}}<p class="error">{{.Error}}</p>{{end}}
+{{with .Fetched}}
+<p>Card at <a class="mono" href="{{.CardURL}}">{{.CardURL}}</a>, served in {{.Latency}}: <span class="grade {{.Report.Grade}}">{{.Report.Grade}}</span></p>
+<div class="wrap"><table>
+<tr><th>Severity</th><th>Field</th><th>Finding</th></tr>
+{{range .Report.Findings}}<tr><td class="{{.Severity}}">{{.Severity}}</td><td class="mono">{{.Path}}</td><td>{{.Message}}</td></tr>
+{{else}}<tr><td colspan="3" class="conformant">No findings. This card is conformant.</td></tr>{{end}}
+</table></div>
+{{end}}
+{{template "foot"}}{{end}}

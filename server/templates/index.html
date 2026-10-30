@@ -1,0 +1,17 @@
+{{define "index.html"}}{{template "head" "Agents"}}
+<p class="muted">Every listing is graded against the A2A 1.0 agent card. Clients still fetch the card from the agent itself before calling it.</p>
+<div class="wrap"><table>
+<tr><th>Agent</th><th>Grade</th><th>Skills</th><th>Status</th><th>Card</th></tr>
+{{range .Entries}}
+<tr>
+  <td><strong>{{.Name}}</strong>{{if .Card}}<br><span class="muted">{{.Card.Description}}</span>{{end}}</td>
+  <td><span class="grade {{.Report.Grade}}">{{.Report.Grade}}</span>{{if .Report.Findings}}<br><a href="/check?url={{.URL}}">{{len .Report.Findings}} findings</a>{{end}}</td>
+  <td class="mono">{{skills .Card}}</td>
+  <td>{{if .Up}}up · {{.LatencyMS}} ms{{else}}<span class="error">down</span>{{end}}<br><span class="muted">seen {{since .LastSeen}} ago</span></td>
+  <td class="mono"><a href="{{.CardURL}}">{{.CardURL}}</a></td>
+</tr>
+{{else}}
+<tr><td colspan="5" class="muted">No agents yet. Register one with <code>POST /agents {"url": "https://your-agent"}</code>.</td></tr>
+{{end}}
+</table></div>
+{{template "foot"}}{{end}}
